@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QM Takeoff — One-Click Area Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">QM</span>
+      <span class="brand-name">Takeoff</span>
+    </div>
+    <div class="topbar-sub">One-click room area measurement</div>
+  </header>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="upload-box">
+        <label class="upload-btn">
+          Upload Drawing
+          <input type="file" id="fileInput" accept="application/pdf" hidden />
+        </label>
+        <p class="hint">PDF floor plans only</p>
+      </div>
+      <h2>Saved Drawings</h2>
+      <ul id="projectList" class="project-list"></ul>
+    </aside>
+
+    <main class="viewer">
+      <div class="toolbar">
+        <button id="oneClickBtn" class="tool-btn primary" disabled>One-Click Area</button>
+        <button id="calibrateBtn" class="tool-btn" disabled>Manual Calibrate</button>
+        <button id="undoBtn" class="tool-btn" disabled>Undo Last</button>
+        <button id="clearBtn" class="tool-btn" disabled>Clear All</button>
+        <span id="scaleInfo" class="scale-info"></span>
+        <div class="spacer"></div>
+        <button id="saveBtn" class="tool-btn primary" disabled>Save Project</button>
+      </div>
+      <div id="statusBar" class="status-bar"></div>
+      <div id="canvasWrap" class="canvas-wrap">
+        <canvas id="pdfCanvas"></canvas>
+        <canvas id="overlayCanvas"></canvas>
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">▦</div>
+          <p>Upload a PDF or select a saved drawing to begin.</p>
+        </div>
+      </div>
+    </main>
+
+    <aside class="takeoff-panel">
+      <h2>Takeoff Table</h2>
+      <div class="takeoff-table-wrap">
+        <table class="takeoff-table">
+          <thead><tr><th>Room</th><th>Area (m²)</th><th></th></tr></thead>
+          <tbody id="takeoffBody"></tbody>
+        </table>
+      </div>
+      <div class="takeoff-total">
+        <span>Total</span>
+        <span id="totalArea">0.00 m²</span>
+      </div>
+      <button id="exportBtn" class="tool-btn" disabled>Export CSV</button>
+    </aside>
+  </div>
+
+  <div id="saveModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>Save Project</h3>
+      <label>Name</label>
+      <input type="text" id="nameInput" placeholder="e.g. LAC-621 Ground Floor Plan" />
+      <label>Description</label>
+      <textarea id="descInput" placeholder="Short description..."></textarea>
+      <div class="modal-actions">
+        <button id="cancelSaveBtn" class="tool-btn">Cancel</button>
+        <button id="confirmSaveBtn" class="tool-btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="calibrateModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>Manual Calibration</h3>
+      <p>Click two points on a line of known real-world length, then enter that length.</p>
+      <label>Real-world length (meters)</label>
+      <input type="number" id="realLengthInput" step="0.01" placeholder="e.g. 8.6" />
+      <div class="modal-actions">
+        <button id="cancelCalibrateBtn" class="tool-btn">Cancel</button>
+        <button id="confirmCalibrateBtn" class="tool-btn primary">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="labelModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>Name This Room</h3>
+      <label>Room label</label>
+      <input type="text" id="roomLabelInput" placeholder="e.g. Generator Room" />
+      <p class="modal-area-preview" id="modalAreaPreview"></p>
+      <div class="modal-actions">
+        <button id="cancelLabelBtn" class="tool-btn">Discard</button>
+        <button id="confirmLabelBtn" class="tool-btn primary">Add to Table</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "qm-takeoff",
+  "version": "1.0.0",
+  "description": "One-click PDF room area takeoff tool with wall-aware detection",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1"
+  }
+}
